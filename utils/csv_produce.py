@@ -1,14 +1,8 @@
 # @Author: chargerKong
 # @Time: 20-6-19 下午4:06
 # @File: csv_produce.py
-
-import os
-import pathlib
+from utils.config import *
 import pandas as pd
-root = pathlib.Path(__file__).parent.parent
-
-img_dir = os.path.join(root, 'data', 'img_data')
-label_dir = os.path.join(root, 'data', 'Gray_Label')
 
 img_list = []
 label_list = []
@@ -27,16 +21,31 @@ for ob in os.listdir(img_dir):
             label_sub_dir3 = os.path.join(label_sub_dir2, ob3)
             # print(label_sub_dir3)
             for ob4 in os.listdir(img_sub_dir3):
+                ob44 = ob4.replace('.jpg', '_bin.png')
                 file_name = os.path.join(img_sub_dir3, ob4)
-                # label_sub_dir4 = os.path.join(label_sub_dir3, ob4)
+                label_sub_dir4 = os.path.join(label_sub_dir3, ob44)
                 # print(label_sub_dir4)
                 # for file_name in os.listdir(img_sub_dir4):
 
                 # img_name = os.path.join(img_sub_dir3, file_name)
+                if not os.path.exists(file_name):
+                    print(file_name)
+                    continue
+                if not os.path.exists(label_sub_dir4):
+                    print(label_sub_dir4)
+                    continue
 
                 img_list.append(file_name)
-                label_list.append(file_name.replace('jpg', 'bin.png'))
+                label_list.append(label_sub_dir4)
+
+assert len(img_list) == len(label_list)
+n = len(img_list)
+print('rows of file is {}'.format(n))
 
 file_name_csv = pd.DataFrame({'image': img_list, 'label': label_list})
-file_name_csv.to_csv('../data/train_csv.csv', index=None)
+six_part = int(n * 0.6)
+eight_part = int(n * 0.8)
 
+file_name_csv[: six_part].to_csv(train_csv_path, index=None)
+file_name_csv[six_part: eight_part].to_csv(val_csv_path, index=None)
+file_name_csv[eight_part:].to_csv(test_csv_path, index=None)
