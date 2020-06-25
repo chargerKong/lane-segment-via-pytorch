@@ -2,6 +2,7 @@
 # @Time: 20-6-24 下午10:32
 # @File: process_label.py
 import numpy as np
+from imgaug import augmenters as iaa
 
 
 def encode_labels(color_mask):
